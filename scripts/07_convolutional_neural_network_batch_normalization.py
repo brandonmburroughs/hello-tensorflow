@@ -5,6 +5,27 @@ from tensorflow.examples.tutorials.mnist import input_data
 
 # Batch normalization
 def batchnorm_layer(Ylogits, is_test, offset, iteration, convolutional=False):
+    """Batch normalization layer for a neural network.  A batch normalization layer normalizes the
+    current batch of inputs by subtracting the mean and dividing by the variance.  For test sets,
+    it keeps an exponential moving average of the mean and variance.
+
+    Parameters
+    ----------
+    Ylogits : tensor
+        The output of the previous layer
+    is_test : bool
+        `True` if this is test data, `False` for training
+    offset : tf.Variable
+        The bias term
+    iteration : int
+        The current iteration of the nueral network
+    convolutional : bool
+        `True` if the previous layer (Ylogits) was a convolutional layer
+
+    Returns
+    -------
+    The batch normalized outputs and the updated moving averages of mean and variance
+    """
     exp_moving_avg = tf.train.ExponentialMovingAverage(0.9999, iteration)
     if convolutional: # average across batch, width, height
         mean, variance = tf.nn.moments(Ylogits, [0, 1, 2])
